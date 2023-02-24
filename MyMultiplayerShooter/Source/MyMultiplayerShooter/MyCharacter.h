@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Components/StaticMeshComponent.h"
 #include "MyCharacter.generated.h"
 
 UCLASS()
@@ -28,4 +29,8 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 		FRotator GetAimOffsets() const;
+	
+
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+	void RotateToPoint(UStaticMeshComponent* MeshToRotate, FVector TargetPoint);
 };

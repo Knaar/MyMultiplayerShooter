@@ -2,6 +2,7 @@
 
 
 #include "MyCharacter.h"
+#include "Components/StaticMeshComponent.h"
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -41,3 +42,30 @@ FRotator AMyCharacter::GetAimOffsets() const
 	return AimRotLS;
 }
 
+void AMyCharacter::RotateToPoint(UStaticMeshComponent* MeshToRotate, FVector TargetPoint) 
+{
+	
+	//Получаем текущую позицию меша
+	FVector CurrentPos = MeshToRotate->GetComponentLocation();
+
+	//Вычисляем расстояние между текущей позицией и целевой точкой
+	FVector DistanceVector = TargetPoint - CurrentPos;
+
+	//Вычисляем длину вектора расстояния
+	float Distance = DistanceVector.Size();
+
+	//Вычисляем направление вектора расстояния
+	FVector DirectionVector = DistanceVector / Distance;
+
+	//Вычисление угла между вектором направления и осью Z
+	float Angle = FMath::Acos(FVector::DotProduct(DirectionVector, FVector::ForwardVector));
+
+	//Вычисляем крутильное направление с помощью вектора произведения
+	FVector CrossVector = FVector::CrossProduct(DirectionVector, FVector::ForwardVector);
+
+	//Если крутильное направление положительное, поворачиваем в минус, иначе плюс.
+	Angle *= CrossVector.Z > 0 ? -1 : 1;
+
+	//Выставляем поворот меша
+	MeshToRotate->SetWorldRotation(FRotator(0, Angle * (180 / PI), 0));
+}
